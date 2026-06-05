@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hours</title>
+<style>
+  *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  body{margin:0;background:#f5f6f8;color:#1c2430;display:flex;justify-content:center;padding:40px 16px}
+  .wrap{width:100%;max-width:480px}
+  h1{font-size:24px;font-weight:700;margin:0 0 18px;text-align:center}
+  .card{background:#fff;border:1px solid #e6e9ee;border-radius:14px;padding:16px;box-shadow:0 4px 16px rgba(20,30,50,.05);margin-bottom:16px}
+  label{display:block;font-size:12px;font-weight:700;color:#7a828f;text-transform:uppercase;letter-spacing:.5px;margin:0 0 5px}
+  input{width:100%;padding:11px 12px;font-size:16px;border:1.5px solid #dde1e8;border-radius:9px;outline:none}
+  input:focus{border-color:#3b6cf6}
+  button{font-family:inherit;cursor:pointer;border:none}
+  .addproj{display:flex;gap:10px}
+  .addproj input{flex:1}
+  .btn{padding:11px 16px;background:#3b6cf6;color:#fff;font-size:15px;font-weight:600;border-radius:9px;white-space:nowrap}
+  .btn:active{transform:scale(.98)}
+  .btn:disabled{opacity:.5}
+
+  .proj{background:#fff;border:1px solid #e6e9ee;border-radius:14px;padding:16px;box-shadow:0 4px 16px rgba(20,30,50,.05);margin-bottom:14px}
+  .proj .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .proj .nm{font-weight:700;font-size:17px}
+  .proj .right{display:flex;align-items:center;gap:12px}
+  .proj .tot{font-weight:700;font-size:16px;color:#3b6cf6;white-space:nowrap}
+  .proj .delp{background:none;color:#c2c8d0;font-size:18px;line-height:1}
+  .proj .delp:hover{color:#e5484d}
+  .logrow{display:flex;gap:8px;margin-bottom:10px}
+  .logrow input{flex:1}
+  .logrow .btn{padding:11px 14px;font-size:14px}
+  .entries{border-top:1px solid #eef0f4;padding-top:8px}
+  .entry{display:flex;align-items:center;justify-content:space-between;font-size:14px;padding:6px 2px;color:#41495a}
+  .entry .ed{color:#9aa1ac;font-size:12px}
+  .entry .eh{font-weight:600;margin-left:auto;margin-right:8px}
+  .entry .dele{background:none;color:#cfd4dc;font-size:15px;line-height:1}
+  .entry .dele:hover{color:#e5484d}
+  .noentry{color:#aab0ba;font-size:13px;padding:4px 2px}
+
+  .total{display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding:14px 16px;background:#1c2430;color:#fff;border-radius:12px;font-weight:700}
+  .total .big{font-size:20px}
+  .empty{text-align:center;color:#9aa1ac;padding:26px 10px;font-size:14px}
+  .status{text-align:center;font-size:13px;margin:4px 0 14px;min-height:18px;color:#9aa1ac}
+  .status.err{color:#e5484d}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>⏱ Hours</h1>
+
+  <div class="card">
+    <label>New project</label>
+    <div class="addproj">
+      <input id="newproj" placeholder="Project name" />
+      <button class="btn" id="addproj">Add</button>
+    </div>
+  </div>
+
+  <div class="status" id="status">Loading…</div>
+  <div id="projects"></div>
+  <div class="total" id="total" style="display:none"><span>Total across all projects</span><span class="big" id="totalH">0 h</span></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // Real database (Supabase) — projects & hours stored on the server.
+  const SUPABASE_URL = "https://gqhdoyrvhmzeelgzuoft.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxaGRveXJ2aG16ZWVsZ3p1b2Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2ODM0NzYsImV4cCI6MjA5NjI1OTQ3Nn0.n_0xx7VnQXhncdRdonVZMKWRDXYS1O8e5YyCZKowf18";
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let projects = [], hours = [];
+  const $ = id => document.getElementById(id);
+  const fmt = h => (Math.round(h*100)/100) + " h";
+  const fmtDate = t => new Date(t).toLocaleDateString(undefined,{month:"short",day:"numeric"});
+  const escapeHtml = s => (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  function status(msg,cls){ const s=$("status"); s.textContent=msg||""; s.className="status"+(cls?" "+cls:""); }
+
+  async function load(){
+    status("Loading…");
+    const [{data:pr,error:e1},{data:hr,error:e2}] = await Promise.all([
+      sb.from("projects").select("*").order("created_at",{ascending:true}),
+      sb.from("hours").select("*").not("project_id","is",null).order("created_at",{ascending:false})
+    ]);
+    if(e1||e2){ status("Couldn't reach the database: "+((e1||e2).message), "err"); return; }
+    projects = pr || []; hours = hr || [];
+    status(""); render();
+  }
+
+  function render(){
+    const box = $("projects");
+    if(!projects.length){
+      box.innerHTML = `<div class="empty">No projects yet. Add one above to start logging hours.</div>`;
+      $("total").style.display="none";
+      return;
+    }
+    box.innerHTML = projects.map(p=>{
+      const mine = hours.filter(h=>h.project_id===p.id);
+      const tot = mine.reduce((s,h)=>s+Number(h.hours),0);
+      const entries = mine.length
+        ? mine.map(h=>`<div class="entry"><span class="ed">${fmtDate(h.created_at)}</span><span class="eh">${fmt(h.hours)}</span><button class="dele" data-h="${h.id}" title="Delete entry">✕</button></div>`).join("")
+        : `<div class="noentry">No hours logged yet.</div>`;
+      return `<div class="proj">
+        <div class="head">
+          <div class="nm">${escapeHtml(p.name)}</div>
+          <div class="right"><span class="tot">${fmt(tot)}</span><button class="delp" data-p="${p.id}" title="Delete project">🗑</button></div>
+        </div>
+        <div class="logrow">
+          <input type="number" step="0.25" min="0" placeholder="Add hours…" data-input="${p.id}" />
+          <button class="btn" data-add="${p.id}">Log</button>
+        </div>
+        <div class="entries">${entries}</div>
+      </div>`;
+    }).join("");
+
+    const grand = hours.reduce((s,h)=>s+Number(h.hours),0);
+    $("total").style.display = "flex";
+    $("totalH").textContent = fmt(grand);
+
+    box.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>logHours(b.dataset.add));
+    box.querySelectorAll("[data-input]").forEach(i=>i.addEventListener("keydown",e=>{ if(e.key==="Enter") logHours(i.dataset.input); }));
+    box.querySelectorAll(".delp").forEach(b=>b.onclick=()=>delProject(b.dataset.p));
+    box.querySelectorAll(".dele").forEach(b=>b.onclick=()=>delHours(b.dataset.h));
+  }
+
+  async function addProject(){
+    const name = $("newproj").value.trim();
+    if(!name){ $("newproj").focus(); return; }
+    $("addproj").disabled = true; status("Saving…");
+    const { error } = await sb.from("projects").insert({ name });
+    $("addproj").disabled = false;
+    if(error){ status("Couldn't add project: "+error.message,"err"); return; }
+    $("newproj").value=""; $("newproj").focus();
+    await load();
+  }
+
+  async function delProject(id){
+    const p = projects.find(x=>x.id===id);
+    if(!confirm(`Delete "${p?p.name:"this project"}" and all its hours?`)) return;
+    const { error } = await sb.from("projects").delete().eq("id", id);
+    if(error){ status("Couldn't delete: "+error.message,"err"); return; }
+    await load();
+  }
+
+  async function logHours(projectId){
+    const input = document.querySelector(`[data-input="${projectId}"]`);
+    const h = parseFloat(input.value);
+    if(!h || h<=0){ input.focus(); return; }
+    status("Saving…");
+    const { error } = await sb.from("hours").insert({ project_id: projectId, hours: h });
+    if(error){ status("Couldn't save: "+error.message,"err"); return; }
+    await load();
+  }
+
+  async function delHours(id){
+    const { error } = await sb.from("hours").delete().eq("id", id);
+    if(error){ status("Couldn't delete: "+error.message,"err"); return; }
+    await load();
+  }
+
+  $("addproj").onclick = addProject;
+  $("newproj").addEventListener("keydown", e=>{ if(e.key==="Enter") addProject(); });
+  load();
+</script>
+</body>
+</html>

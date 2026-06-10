@@ -16,6 +16,7 @@ create table if not exists public.hours (
 );
 alter table public.hours add column if not exists
   project_id uuid references public.projects(id) on delete cascade;
+alter table public.hours alter column project drop not null;
 
 -- 3) Open (no-login) access on both tables
 alter table public.projects enable row level security;

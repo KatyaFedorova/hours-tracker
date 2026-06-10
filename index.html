@@ -144,10 +144,11 @@
 
   async function logHours(projectId){
     const input = document.querySelector(`[data-input="${projectId}"]`);
+    const project = projects.find(p=>p.id===projectId);
     const h = parseFloat(input.value);
     if(!h || h<=0){ input.focus(); return; }
     status("Saving…");
-    const { error } = await sb.from("hours").insert({ project_id: projectId, hours: h });
+    const { error } = await sb.from("hours").insert({ project_id: projectId, project: project ? project.name : "", hours: h });
     if(error){ status("Couldn't save: "+error.message,"err"); return; }
     await load();
   }

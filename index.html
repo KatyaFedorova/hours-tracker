@@ -18,9 +18,8 @@
   button{font-family:inherit;cursor:pointer;border:none}
   .auth{width:100%;max-width:380px;margin:40px auto 0}
   .auth .card{padding:18px}
-  .authrow{display:grid;gap:10px;margin-bottom:12px}
-  .authactions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .mutedbtn{padding:11px 16px;background:#eef1f5;color:#1c2430;font-size:15px;font-weight:600;border-radius:9px;white-space:nowrap}
+  .googlebtn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:11px 16px;background:#fff;color:#1c2430;font-size:15px;font-weight:700;border:1.5px solid #dde1e8;border-radius:9px}
+  .googlemark{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#f5f6f8;color:#3b6cf6;font-weight:800}
   .userbar{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-bottom:12px;color:#7a828f;font-size:13px}
   .signout{background:none;color:#3b6cf6;font-weight:700;padding:0}
   .addproj{display:flex;gap:10px}
@@ -66,20 +65,7 @@
   <div class="auth" id="authView">
     <div class="card">
       <h2>⏱ Hours</h2>
-      <div class="authrow">
-        <div>
-          <label>Email</label>
-          <input id="email" type="email" autocomplete="email" placeholder="you@example.com" />
-        </div>
-        <div>
-          <label>Password</label>
-          <input id="password" type="password" autocomplete="current-password" placeholder="Password" />
-        </div>
-      </div>
-      <div class="authactions">
-        <button class="btn" id="signin">Sign in</button>
-        <button class="mutedbtn" id="signup">Sign up</button>
-      </div>
+      <button class="googlebtn" id="googleSignin"><span class="googlemark">G</span>Continue with Google</button>
       <div class="status" id="authStatus"></div>
     </div>
   </div>
@@ -198,29 +184,16 @@
     await load();
   }
 
-  async function signIn(){
-    const email = $("email").value.trim();
-    const password = $("password").value;
-    if(!email || !password){ $("email").focus(); return; }
-    $("signin").disabled = true; $("signup").disabled = true;
-    authStatus("Signing in…");
-    const { data, error } = await sb.auth.signInWithPassword({ email, password });
-    $("signin").disabled = false; $("signup").disabled = false;
-    if(error){ authStatus("Couldn't sign in: "+error.message,"err"); return; }
-    await showSignedIn(data.session);
-  }
-
-  async function signUp(){
-    const email = $("email").value.trim();
-    const password = $("password").value;
-    if(!email || !password){ $("email").focus(); return; }
-    $("signin").disabled = true; $("signup").disabled = true;
-    authStatus("Creating account…");
-    const { data, error } = await sb.auth.signUp({ email, password });
-    $("signin").disabled = false; $("signup").disabled = false;
-    if(error){ authStatus("Couldn't sign up: "+error.message,"err"); return; }
-    if(data.session){ await showSignedIn(data.session); return; }
-    authStatus("Check your email to confirm your account.");
+  async function signInWithGoogle(){
+    $("googleSignin").disabled = true;
+    authStatus("Opening Google…");
+    const options = {};
+    if(window.location.protocol !== "file:"){
+      options.redirectTo = window.location.origin + window.location.pathname;
+    }
+    const { error } = await sb.auth.signInWithOAuth({ provider: "google", options });
+    $("googleSignin").disabled = false;
+    if(error){ authStatus("Couldn't open Google: "+error.message,"err"); }
   }
 
   async function signOut(){
@@ -255,10 +228,8 @@
 
   $("addproj").onclick = addProject;
   $("newproj").addEventListener("keydown", e=>{ if(e.key==="Enter") addProject(); });
-  $("signin").onclick = signIn;
-  $("signup").onclick = signUp;
+  $("googleSignin").onclick = signInWithGoogle;
   $("signout").onclick = signOut;
-  $("password").addEventListener("keydown", e=>{ if(e.key==="Enter") signIn(); });
   sb.auth.onAuthStateChange((_event,nextSession)=>{
     if(nextSession){ showSignedIn(nextSession); }
     else{ showSignedOut(); }

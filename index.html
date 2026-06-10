@@ -12,6 +12,9 @@
   .topbar{display:grid;grid-template-columns:auto minmax(280px,420px);gap:18px;align-items:end;margin-bottom:18px}
   h1{font-size:28px;font-weight:700;margin:0}
   h2{font-size:22px;font-weight:700;margin:0 0 14px;text-align:center}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand.center{justify-content:center}
+  .clockicon{width:1.15em;height:1.15em;flex:none}
   .card{background:#fff;border:1px solid #e6e9ee;border-radius:8px;padding:14px;box-shadow:0 4px 16px rgba(20,30,50,.05)}
   label{display:block;font-size:12px;font-weight:700;color:#7a828f;text-transform:uppercase;letter-spacing:.5px;margin:0 0 5px}
   input{width:100%;padding:11px 12px;font-size:16px;border:1.5px solid #dde1e8;border-radius:9px;outline:none}
@@ -65,7 +68,7 @@
 <div class="wrap">
   <div class="auth" id="authView">
     <div class="card">
-      <h2>⏱ Hours</h2>
+      <h2 class="brand center"><svg class="clockicon" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="6"/><path d="M32 18v15l10 7" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Hours</span></h2>
       <button class="googlebtn" id="googleSignin"><span class="googlemark">G</span>Continue with Google</button>
       <div class="status" id="authStatus"></div>
     </div>
@@ -78,7 +81,7 @@
     </div>
 
     <div class="topbar">
-      <h1>⏱ Hours</h1>
+      <h1 class="brand"><svg class="clockicon" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="6"/><path d="M32 18v15l10 7" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Hours</span></h1>
 
       <div class="card">
         <label>New project</label>

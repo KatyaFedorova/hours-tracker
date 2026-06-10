@@ -10,11 +10,19 @@
   .wrap{width:100%;max-width:1040px}
   .topbar{display:grid;grid-template-columns:auto minmax(280px,420px);gap:18px;align-items:end;margin-bottom:18px}
   h1{font-size:28px;font-weight:700;margin:0}
+  h2{font-size:22px;font-weight:700;margin:0 0 14px;text-align:center}
   .card{background:#fff;border:1px solid #e6e9ee;border-radius:8px;padding:14px;box-shadow:0 4px 16px rgba(20,30,50,.05)}
   label{display:block;font-size:12px;font-weight:700;color:#7a828f;text-transform:uppercase;letter-spacing:.5px;margin:0 0 5px}
   input{width:100%;padding:11px 12px;font-size:16px;border:1.5px solid #dde1e8;border-radius:9px;outline:none}
   input:focus{border-color:#3b6cf6}
   button{font-family:inherit;cursor:pointer;border:none}
+  .auth{width:100%;max-width:380px;margin:40px auto 0}
+  .auth .card{padding:18px}
+  .authrow{display:grid;gap:10px;margin-bottom:12px}
+  .authactions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mutedbtn{padding:11px 16px;background:#eef1f5;color:#1c2430;font-size:15px;font-weight:600;border-radius:9px;white-space:nowrap}
+  .userbar{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-bottom:12px;color:#7a828f;font-size:13px}
+  .signout{background:none;color:#3b6cf6;font-weight:700;padding:0}
   .addproj{display:flex;gap:10px}
   .addproj input{flex:1}
   .btn{padding:11px 16px;background:#3b6cf6;color:#fff;font-size:15px;font-weight:600;border-radius:9px;white-space:nowrap}
@@ -55,21 +63,49 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="topbar">
-    <h1>⏱ Hours</h1>
-
+  <div class="auth" id="authView">
     <div class="card">
-      <label>New project</label>
-      <div class="addproj">
-        <input id="newproj" placeholder="Project name" />
-        <button class="btn" id="addproj">Add</button>
+      <h2>⏱ Hours</h2>
+      <div class="authrow">
+        <div>
+          <label>Email</label>
+          <input id="email" type="email" autocomplete="email" placeholder="you@example.com" />
+        </div>
+        <div>
+          <label>Password</label>
+          <input id="password" type="password" autocomplete="current-password" placeholder="Password" />
+        </div>
       </div>
+      <div class="authactions">
+        <button class="btn" id="signin">Sign in</button>
+        <button class="mutedbtn" id="signup">Sign up</button>
+      </div>
+      <div class="status" id="authStatus"></div>
     </div>
   </div>
 
-  <div class="status" id="status">Loading…</div>
-  <div id="projects"></div>
-  <div class="total" id="total" style="display:none"><span>Total across all projects</span><span class="big" id="totalH">0 h</span></div>
+  <div id="appView" style="display:none">
+    <div class="userbar">
+      <span id="userEmail"></span>
+      <button class="signout" id="signout">Sign out</button>
+    </div>
+
+    <div class="topbar">
+      <h1>⏱ Hours</h1>
+
+      <div class="card">
+        <label>New project</label>
+        <div class="addproj">
+          <input id="newproj" placeholder="Project name" />
+          <button class="btn" id="addproj">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="status" id="status">Loading…</div>
+    <div id="projects"></div>
+    <div class="total" id="total" style="display:none"><span>Total across all projects</span><span class="big" id="totalH">0 h</span></div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -79,14 +115,32 @@
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxaGRveXJ2aG16ZWVsZ3p1b2Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2ODM0NzYsImV4cCI6MjA5NjI1OTQ3Nn0.n_0xx7VnQXhncdRdonVZMKWRDXYS1O8e5YyCZKowf18";
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  let projects = [], hours = [];
+  let projects = [], hours = [], session = null;
   const $ = id => document.getElementById(id);
   const fmt = h => (Math.round(h*100)/100) + " h";
   const fmtDate = t => new Date(t).toLocaleDateString(undefined,{month:"short",day:"numeric"});
   const escapeHtml = s => (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   function status(msg,cls){ const s=$("status"); s.textContent=msg||""; s.className="status"+(cls?" "+cls:""); }
+  function authStatus(msg,cls){ const s=$("authStatus"); s.textContent=msg||""; s.className="status"+(cls?" "+cls:""); }
+
+  function showSignedOut(){
+    session = null;
+    projects = []; hours = [];
+    $("authView").style.display = "block";
+    $("appView").style.display = "none";
+    $("total").style.display = "none";
+  }
+
+  async function showSignedIn(nextSession){
+    session = nextSession;
+    $("authView").style.display = "none";
+    $("appView").style.display = "block";
+    $("userEmail").textContent = session.user.email || "";
+    await load();
+  }
 
   async function load(){
+    if(!session){ showSignedOut(); return; }
     status("Loading…");
     const [{data:pr,error:e1},{data:hr,error:e2}] = await Promise.all([
       sb.from("projects").select("*").order("created_at",{ascending:true}),
@@ -144,6 +198,36 @@
     await load();
   }
 
+  async function signIn(){
+    const email = $("email").value.trim();
+    const password = $("password").value;
+    if(!email || !password){ $("email").focus(); return; }
+    $("signin").disabled = true; $("signup").disabled = true;
+    authStatus("Signing in…");
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    $("signin").disabled = false; $("signup").disabled = false;
+    if(error){ authStatus("Couldn't sign in: "+error.message,"err"); return; }
+    await showSignedIn(data.session);
+  }
+
+  async function signUp(){
+    const email = $("email").value.trim();
+    const password = $("password").value;
+    if(!email || !password){ $("email").focus(); return; }
+    $("signin").disabled = true; $("signup").disabled = true;
+    authStatus("Creating account…");
+    const { data, error } = await sb.auth.signUp({ email, password });
+    $("signin").disabled = false; $("signup").disabled = false;
+    if(error){ authStatus("Couldn't sign up: "+error.message,"err"); return; }
+    if(data.session){ await showSignedIn(data.session); return; }
+    authStatus("Check your email to confirm your account.");
+  }
+
+  async function signOut(){
+    await sb.auth.signOut();
+    showSignedOut();
+  }
+
   async function delProject(id){
     const p = projects.find(x=>x.id===id);
     if(!confirm(`Delete "${p?p.name:"this project"}" and all its hours?`)) return;
@@ -171,7 +255,18 @@
 
   $("addproj").onclick = addProject;
   $("newproj").addEventListener("keydown", e=>{ if(e.key==="Enter") addProject(); });
-  load();
+  $("signin").onclick = signIn;
+  $("signup").onclick = signUp;
+  $("signout").onclick = signOut;
+  $("password").addEventListener("keydown", e=>{ if(e.key==="Enter") signIn(); });
+  sb.auth.onAuthStateChange((_event,nextSession)=>{
+    if(nextSession){ showSignedIn(nextSession); }
+    else{ showSignedOut(); }
+  });
+  sb.auth.getSession().then(({data})=>{
+    if(data.session){ showSignedIn(data.session); }
+    else{ showSignedOut(); }
+  });
 </script>
 </body>
 </html>

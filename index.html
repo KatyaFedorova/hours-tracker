@@ -9,10 +9,11 @@
   *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   body{margin:0;background:#f5f6f8;color:#1c2430;display:flex;justify-content:center;padding:32px 16px}
   .wrap{width:100%;max-width:1040px}
-  .topbar{display:grid;grid-template-columns:auto minmax(280px,420px);gap:18px;align-items:end;margin-bottom:18px}
+  .topbar{display:grid;grid-template-columns:auto minmax(280px,420px);gap:18px;align-items:center;margin-bottom:18px}
   h1{font-size:28px;font-weight:700;margin:0}
   h2{font-size:22px;font-weight:700;margin:0 0 14px;text-align:center}
   .brand{display:flex;align-items:center;gap:10px}
+  .topbar .brand{align-self:start;margin-top:18px}
   .brand.center{justify-content:center}
   .clockicon{width:1.15em;height:1.15em;flex:none}
   .card{background:#fff;border:1px solid #e6e9ee;border-radius:8px;padding:14px;box-shadow:0 4px 16px rgba(20,30,50,.05)}
@@ -31,19 +32,46 @@
   .btn{padding:11px 16px;background:#3b6cf6;color:#fff;font-size:15px;font-weight:600;border-radius:9px;white-space:nowrap}
   .btn:active{transform:scale(.98)}
   .btn:disabled{opacity:.5}
+  .binge{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;margin:-4px 0 18px;padding:12px 14px;background:#fff;border:1px solid #e6e9ee;border-radius:8px;box-shadow:0 4px 16px rgba(20,30,50,.05)}
+  .binge .bt{font-size:13px;font-weight:800;color:#7a828f;text-transform:uppercase}
+  .binge .bd{font-size:22px;font-weight:800;color:#1c2430;white-space:nowrap}
+  .binge .bd span{color:#3b6cf6}
+  .binge .controls{display:flex;justify-content:flex-end;gap:10px;align-items:center}
+  .binge input[type="number"]{width:70px;padding:8px 9px;font-size:14px;border-radius:8px}
+  .binge .goal{display:flex;align-items:center;gap:6px;color:#9aa1ac;font-size:12px;font-weight:700}
+  .bingeActions{display:flex;justify-content:flex-end}
+  .dangerbtn{padding:9px 11px;background:#fff0f1;color:#d33d45;font-size:13px;font-weight:800;border-radius:8px}
+  .bingeHistory{grid-column:1 / -1;border-top:1px solid #eef0f4;padding-top:10px}
+  .historyHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;color:#9aa1ac;font-size:12px;font-weight:800;text-transform:uppercase}
+  .historyClear{background:none;color:#c2c8d0;font-size:12px;font-weight:800;padding:0}
+  .historyClear:hover{color:#e5484d}
+  .historyItems{display:grid;gap:6px}
+  .historyItem{display:grid;grid-template-columns:90px 1fr auto;gap:10px;align-items:center;padding:7px 9px;background:#f7f8fa;border:1px solid #eef0f4;border-radius:8px}
+  .historyItem strong{display:block;color:#1c2430;font-size:14px}
+  .historyItem span{display:block;color:#9aa1ac;font-size:12px;white-space:nowrap}
+  .historyBar{height:5px;background:#e5e9f0;border-radius:999px;overflow:hidden}
+  .historyBar i{display:block;height:100%;background:#3b6cf6;border-radius:999px}
+  .historyEmpty{color:#aab0ba;font-size:13px}
 
   #projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;align-items:start}
   .proj{background:#fff;border:1px solid #e6e9ee;border-radius:8px;padding:14px;box-shadow:0 4px 16px rgba(20,30,50,.05)}
   .proj .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-  .proj .nm{font-weight:700;font-size:17px}
-  .proj .right{display:flex;align-items:center;gap:12px}
+  .proj .nm{flex:1;min-width:0;margin-right:8px;font-weight:700;font-size:17px}
+  .proj .nameedit{width:100%;min-width:0;padding:0;border:0;border-radius:0;background:transparent;color:inherit;font-size:17px;font-weight:700}
+  .proj .nameedit:focus{border:0;box-shadow:none;outline:2px solid #dbe3ff;outline-offset:4px}
+  .proj .right{display:flex;align-items:center;gap:8px}
   .proj .tot{font-weight:700;font-size:16px;color:#3b6cf6;white-space:nowrap}
-  .proj .delp{background:none;color:#c2c8d0;font-size:18px;line-height:1}
+  .proj .delp{display:grid;place-items:center;width:24px;height:24px;background:none;color:#c2c8d0;font-size:22px;line-height:1;border-radius:50%;opacity:.55}
+  .proj:hover .delp{opacity:1}
   .proj .delp:hover{color:#e5484d}
   .logrow{display:flex;gap:8px;margin-bottom:10px}
   .logrow input{flex:1}
   .logrow .btn{padding:11px 14px;font-size:14px}
   .entries{border-top:1px solid #eef0f4;padding-top:8px}
+  .entries.scroll{max-height:96px;overflow-y:auto;padding-right:5px}
+  .entries.scroll::-webkit-scrollbar{width:6px}
+  .entries.scroll::-webkit-scrollbar-track{background:#f1f3f6;border-radius:999px}
+  .entries.scroll::-webkit-scrollbar-thumb{background:#c8ced8;border-radius:999px}
   .entry{display:flex;align-items:center;justify-content:space-between;font-size:14px;padding:6px 2px;color:#41495a}
   .entry .ed{color:#9aa1ac;font-size:12px}
   .entry .eh{font-weight:600;margin-left:auto;margin-right:8px}
@@ -51,8 +79,6 @@
   .entry .dele:hover{color:#e5484d}
   .noentry{color:#aab0ba;font-size:13px;padding:4px 2px}
 
-  .total{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding:14px 16px;background:#1c2430;color:#fff;border-radius:8px;font-weight:700}
-  .total .big{font-size:20px}
   .empty{text-align:center;color:#9aa1ac;padding:26px 10px;font-size:14px}
   .status{text-align:center;font-size:13px;margin:4px 0 14px;min-height:18px;color:#9aa1ac}
   .status.err{color:#e5484d}
@@ -60,6 +86,12 @@
     body{padding:24px 12px}
     .topbar{grid-template-columns:1fr;gap:14px}
     h1{text-align:center;font-size:24px}
+    .binge{grid-template-columns:1fr;gap:10px}
+    .binge .controls{justify-content:stretch}
+    .historyItem{grid-template-columns:74px 1fr;gap:8px}
+    .historyItem span{grid-column:1 / -1}
+    .bingeActions{justify-content:stretch}
+    .dangerbtn{width:100%}
     #projects{grid-template-columns:1fr}
   }
 </style>
@@ -92,9 +124,26 @@
       </div>
     </div>
 
+    <div class="binge">
+      <div>
+        <div class="bt">Binge-free streak</div>
+        <div class="bd"><span id="bingeDaysText">0</span> days</div>
+      </div>
+      <div class="controls">
+        <input id="bingeDaysNumber" type="number" min="0" max="365" value="0" />
+        <label class="goal">Goal <input id="bingeGoal" type="number" min="1" max="365" value="30" /></label>
+      </div>
+      <div class="bingeActions">
+        <button class="dangerbtn" id="logBinge">Log binge</button>
+      </div>
+      <div class="bingeHistory">
+        <div class="historyHead"><span>History</span><button class="historyClear" id="clearBinges">Clear</button></div>
+        <div class="historyItems" id="bingeHistory"></div>
+      </div>
+    </div>
+
     <div class="status" id="status">Loading…</div>
     <div id="projects"></div>
-    <div class="total" id="total" style="display:none"><span>Total across all projects</span><span class="big" id="totalH">0 h</span></div>
   </div>
 </div>
 
@@ -118,7 +167,6 @@
     projects = []; hours = [];
     $("authView").style.display = "block";
     $("appView").style.display = "none";
-    $("total").style.display = "none";
   }
 
   async function showSignedIn(nextSession){
@@ -126,7 +174,72 @@
     $("authView").style.display = "none";
     $("appView").style.display = "block";
     $("userEmail").textContent = session.user.email || "";
+    loadBingeTracker();
     await load();
+  }
+
+  const bingeKey = suffix => `hours:${session && session.user ? session.user.id : "local"}:${suffix}`;
+
+  function setBingeValues(days,goal){
+    const safeGoal = Math.max(1, Math.min(365, Number(goal)||30));
+    const safeDays = Math.max(0, Math.min(365, Number(days)||0));
+    $("bingeGoal").value = safeGoal;
+    $("bingeDaysNumber").value = safeDays;
+    $("bingeDaysText").textContent = safeDays;
+    localStorage.setItem(bingeKey("bingeDays"), String(safeDays));
+    localStorage.setItem(bingeKey("bingeGoal"), String(safeGoal));
+  }
+
+  function getBingeHistory(){
+    try{ return JSON.parse(localStorage.getItem(bingeKey("bingeHistory")) || "[]"); }
+    catch(_e){ return []; }
+  }
+
+  function saveBingeHistory(history){
+    localStorage.setItem(bingeKey("bingeHistory"), JSON.stringify(history.slice(0,12)));
+  }
+
+  function renderBingeHistory(){
+    const box = $("bingeHistory");
+    const history = getBingeHistory();
+    if(!history.length){
+      box.innerHTML = `<div class="historyEmpty">No binges logged yet.</div>`;
+      return;
+    }
+    box.innerHTML = history.map(item=>{
+      const goal = Math.max(1, Number(item.goal)||Number($("bingeGoal").value)||30);
+      const pct = Math.min(100, Math.round((Number(item.days)||0)/goal*100));
+      return `
+      <div class="historyItem">
+        <strong>${item.days} day${item.days===1?"":"s"}</strong>
+        <span>${fmtDate(item.date)} · ${item.days}/${goal}</span>
+        <div class="historyBar"><i style="width:${pct}%"></i></div>
+      </div>
+    `}).join("");
+  }
+
+  function loadBingeTracker(){
+    setBingeValues(
+      localStorage.getItem(bingeKey("bingeDays")) || 0,
+      localStorage.getItem(bingeKey("bingeGoal")) || 30
+    );
+    renderBingeHistory();
+  }
+
+  function logBinge(){
+    const days = Math.max(0, Math.min(365, Number($("bingeDaysNumber").value)||0));
+    if(!confirm(`Log a binge after ${days} day${days===1?"":"s"} and reset the streak?`)) return;
+    const goal = Math.max(1, Math.min(365, Number($("bingeGoal").value)||30));
+    const history = [{ days, goal, date: new Date().toISOString() }, ...getBingeHistory()];
+    saveBingeHistory(history);
+    setBingeValues(0,$("bingeGoal").value);
+    renderBingeHistory();
+  }
+
+  function clearBinges(){
+    if(!confirm("Clear binge history?")) return;
+    saveBingeHistory([]);
+    renderBingeHistory();
   }
 
   async function load(){
@@ -145,34 +258,41 @@
     const box = $("projects");
     if(!projects.length){
       box.innerHTML = `<div class="empty">No projects yet. Add one above to start logging hours.</div>`;
-      $("total").style.display="none";
       return;
     }
-    box.innerHTML = projects.map(p=>{
+    const totals = new Map(projects.map(p=>[
+      p.id,
+      hours.filter(h=>h.project_id===p.id).reduce((s,h)=>s+Number(h.hours),0)
+    ]));
+    const sortedProjects = [...projects].sort((a,b)=>
+      (totals.get(b.id)||0) - (totals.get(a.id)||0)
+      || a.name.localeCompare(b.name)
+    );
+    box.innerHTML = sortedProjects.map(p=>{
       const mine = hours.filter(h=>h.project_id===p.id);
-      const tot = mine.reduce((s,h)=>s+Number(h.hours),0);
+      const tot = totals.get(p.id) || 0;
       const entries = mine.length
         ? mine.map(h=>`<div class="entry"><span class="ed">${fmtDate(h.created_at)}</span><span class="eh">${fmt(h.hours)}</span><button class="dele" data-h="${h.id}" title="Delete entry">✕</button></div>`).join("")
         : `<div class="noentry">No hours logged yet.</div>`;
       return `<div class="proj">
         <div class="head">
-          <div class="nm">${escapeHtml(p.name)}</div>
-          <div class="right"><span class="tot">${fmt(tot)}</span><button class="delp" data-p="${p.id}" title="Delete project">🗑</button></div>
+          <div class="nm"><input class="nameedit" data-name="${p.id}" value="${escapeHtml(p.name)}" title="Edit project name" /></div>
+          <div class="right"><span class="tot">${fmt(tot)}</span><button class="delp" data-p="${p.id}" title="Delete project">×</button></div>
         </div>
         <div class="logrow">
           <input type="number" step="0.25" min="0" placeholder="Add hours…" data-input="${p.id}" />
           <button class="btn" data-add="${p.id}">Log</button>
         </div>
-        <div class="entries">${entries}</div>
+        <div class="entries${mine.length>3?" scroll":""}">${entries}</div>
       </div>`;
     }).join("");
 
-    const grand = hours.reduce((s,h)=>s+Number(h.hours),0);
-    $("total").style.display = "flex";
-    $("totalH").textContent = fmt(grand);
-
     box.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>logHours(b.dataset.add));
     box.querySelectorAll("[data-input]").forEach(i=>i.addEventListener("keydown",e=>{ if(e.key==="Enter") logHours(i.dataset.input); }));
+    box.querySelectorAll("[data-name]").forEach(n=>{
+      n.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); n.blur(); } });
+      n.addEventListener("blur",()=>renameProject(n.dataset.name,n.value.trim()));
+    });
     box.querySelectorAll(".delp").forEach(b=>b.onclick=()=>delProject(b.dataset.p));
     box.querySelectorAll(".dele").forEach(b=>b.onclick=()=>delHours(b.dataset.h));
   }
@@ -213,6 +333,16 @@
     await load();
   }
 
+  async function renameProject(id,name){
+    const p = projects.find(x=>x.id===id);
+    if(!p || !name || name===p.name){ render(); return; }
+    status("Saving…");
+    const { data, error } = await sb.from("projects").update({ name }).eq("id", id).select("id,name").maybeSingle();
+    if(error){ status("Couldn't rename project: "+error.message,"err"); render(); return; }
+    if(!data){ status("Couldn't rename project: Supabase update policy is not enabled yet.","err"); render(); return; }
+    await load();
+  }
+
   async function logHours(projectId){
     const input = document.querySelector(`[data-input="${projectId}"]`);
     const project = projects.find(p=>p.id===projectId);
@@ -234,6 +364,10 @@
   $("newproj").addEventListener("keydown", e=>{ if(e.key==="Enter") addProject(); });
   $("googleSignin").onclick = signInWithGoogle;
   $("signout").onclick = signOut;
+  $("bingeDaysNumber").addEventListener("change", e=>setBingeValues(e.target.value,$("bingeGoal").value));
+  $("bingeGoal").addEventListener("change", e=>setBingeValues($("bingeDaysNumber").value,e.target.value));
+  $("logBinge").onclick = logBinge;
+  $("clearBinges").onclick = clearBinges;
   sb.auth.onAuthStateChange((_event,nextSession)=>{
     if(nextSession){ showSignedIn(nextSession); }
     else{ showSignedOut(); }

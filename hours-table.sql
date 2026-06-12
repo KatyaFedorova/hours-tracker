@@ -39,9 +39,11 @@ drop policy if exists "open insert" on public.projects;
 drop policy if exists "open delete" on public.projects;
 drop policy if exists "own projects read"   on public.projects;
 drop policy if exists "own projects insert" on public.projects;
+drop policy if exists "own projects update" on public.projects;
 drop policy if exists "own projects delete" on public.projects;
 create policy "own projects read"   on public.projects for select using (user_id = auth.uid());
 create policy "own projects insert" on public.projects for insert with check (user_id = auth.uid());
+create policy "own projects update" on public.projects for update using (user_id = auth.uid()) with check (user_id = auth.uid());
 create policy "own projects delete" on public.projects for delete using (user_id = auth.uid());
 
 drop policy if exists "open read"   on public.hours;

@@ -15,8 +15,9 @@
   .brand{display:flex;align-items:center;gap:10px}
   .topbar .brandblock{align-self:start;margin-top:18px}
   .brand.center{justify-content:center}
-  .tagline{margin:6px 0 0;color:#7a828f;font-size:14px;font-weight:600}
-  .tagline.center{text-align:center;margin-bottom:14px}
+  /* 5x the old 14px, easing down on narrow screens so it still fits. */
+  .tagline{margin:10px 0 0;color:#7a828f;font-size:clamp(30px,7vw,70px);line-height:1.08;font-weight:600}
+  .tagline.center{text-align:center;margin-bottom:18px}
   .clockicon{width:1.15em;height:1.15em;flex:none}
   .card{background:#fff;border:1px solid #e6e9ee;border-radius:8px;padding:14px;box-shadow:0 4px 16px rgba(20,30,50,.05)}
   label{display:block;font-size:12px;font-weight:700;color:#7a828f;text-transform:uppercase;letter-spacing:.5px;margin:0 0 5px}

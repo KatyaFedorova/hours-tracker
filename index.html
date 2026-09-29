@@ -13,8 +13,10 @@
   h1{font-size:28px;font-weight:700;margin:0}
   h2{font-size:22px;font-weight:700;margin:0 0 14px;text-align:center}
   .brand{display:flex;align-items:center;gap:10px}
-  .topbar .brand{align-self:start;margin-top:18px}
+  .topbar .brandblock{align-self:start;margin-top:18px}
   .brand.center{justify-content:center}
+  .tagline{margin:6px 0 0;color:#7a828f;font-size:14px;font-weight:600}
+  .tagline.center{text-align:center;margin-bottom:14px}
   .clockicon{width:1.15em;height:1.15em;flex:none}
   .card{background:#fff;border:1px solid #e6e9ee;border-radius:8px;padding:14px;box-shadow:0 4px 16px rgba(20,30,50,.05)}
   label{display:block;font-size:12px;font-weight:700;color:#7a828f;text-transform:uppercase;letter-spacing:.5px;margin:0 0 5px}
@@ -32,26 +34,6 @@
   .btn{padding:11px 16px;background:#3b6cf6;color:#fff;font-size:15px;font-weight:600;border-radius:9px;white-space:nowrap}
   .btn:active{transform:scale(.98)}
   .btn:disabled{opacity:.5}
-  .binge{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;margin:-4px 0 18px;padding:12px 14px;background:#fff;border:1px solid #e6e9ee;border-radius:8px;box-shadow:0 4px 16px rgba(20,30,50,.05)}
-  .binge .bt{font-size:13px;font-weight:800;color:#7a828f;text-transform:uppercase}
-  .binge .bd{font-size:22px;font-weight:800;color:#1c2430;white-space:nowrap}
-  .binge .bd span{color:#3b6cf6}
-  .binge .controls{display:flex;justify-content:flex-end;gap:10px;align-items:center}
-  .binge input[type="number"]{width:70px;padding:8px 9px;font-size:14px;border-radius:8px}
-  .binge .goal{display:flex;align-items:center;gap:6px;color:#9aa1ac;font-size:12px;font-weight:700}
-  .bingeActions{display:flex;justify-content:flex-end}
-  .dangerbtn{padding:9px 11px;background:#fff0f1;color:#d33d45;font-size:13px;font-weight:800;border-radius:8px}
-  .bingeHistory{grid-column:1 / -1;border-top:1px solid #eef0f4;padding-top:10px}
-  .historyHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;color:#9aa1ac;font-size:12px;font-weight:800;text-transform:uppercase}
-  .historyClear{background:none;color:#c2c8d0;font-size:12px;font-weight:800;padding:0}
-  .historyClear:hover{color:#e5484d}
-  .historyItems{display:grid;gap:6px}
-  .historyItem{display:grid;grid-template-columns:90px 1fr auto;gap:10px;align-items:center;padding:7px 9px;background:#f7f8fa;border:1px solid #eef0f4;border-radius:8px}
-  .historyItem strong{display:block;color:#1c2430;font-size:14px}
-  .historyItem span{display:block;color:#9aa1ac;font-size:12px;white-space:nowrap}
-  .historyBar{height:5px;background:#e5e9f0;border-radius:999px;overflow:hidden}
-  .historyBar i{display:block;height:100%;background:#3b6cf6;border-radius:999px}
-  .historyEmpty{color:#aab0ba;font-size:13px}
 
   #projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;align-items:start}
   .proj{background:#fff;border:1px solid #e6e9ee;border-radius:8px;padding:14px;box-shadow:0 4px 16px rgba(20,30,50,.05)}
@@ -86,12 +68,6 @@
     body{padding:24px 12px}
     .topbar{grid-template-columns:1fr;gap:14px}
     h1{text-align:center;font-size:24px}
-    .binge{grid-template-columns:1fr;gap:10px}
-    .binge .controls{justify-content:stretch}
-    .historyItem{grid-template-columns:74px 1fr;gap:8px}
-    .historyItem span{grid-column:1 / -1}
-    .bingeActions{justify-content:stretch}
-    .dangerbtn{width:100%}
     #projects{grid-template-columns:1fr}
   }
 </style>
@@ -101,6 +77,7 @@
   <div class="auth" id="authView">
     <div class="card">
       <h2 class="brand center"><svg class="clockicon" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M25 8h14M32 8v6M48 16l4-4"/><circle cx="32" cy="35" r="22"/><path d="M32 24v12l8 5"/></g><g fill="currentColor"><circle cx="32" cy="19" r="2.2"/><circle cx="32" cy="51" r="2.2"/><circle cx="16" cy="35" r="2.2"/><circle cx="48" cy="35" r="2.2"/><circle cx="21" cy="24" r="2"/><circle cx="43" cy="24" r="2"/><circle cx="21" cy="46" r="2"/><circle cx="43" cy="46" r="2"/></g></svg><span>Hours</span></h2>
+      <p class="tagline center">Do it for 20 hours to master the skill.</p>
       <button class="googlebtn" id="googleSignin"><span class="googlemark">G</span>Continue with Google</button>
       <div class="status" id="authStatus"></div>
     </div>
@@ -113,7 +90,10 @@
     </div>
 
     <div class="topbar">
-      <h1 class="brand"><svg class="clockicon" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M25 8h14M32 8v6M48 16l4-4"/><circle cx="32" cy="35" r="22"/><path d="M32 24v12l8 5"/></g><g fill="currentColor"><circle cx="32" cy="19" r="2.2"/><circle cx="32" cy="51" r="2.2"/><circle cx="16" cy="35" r="2.2"/><circle cx="48" cy="35" r="2.2"/><circle cx="21" cy="24" r="2"/><circle cx="43" cy="24" r="2"/><circle cx="21" cy="46" r="2"/><circle cx="43" cy="46" r="2"/></g></svg><span>Hours</span></h1>
+      <div class="brandblock">
+        <h1 class="brand"><svg class="clockicon" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M25 8h14M32 8v6M48 16l4-4"/><circle cx="32" cy="35" r="22"/><path d="M32 24v12l8 5"/></g><g fill="currentColor"><circle cx="32" cy="19" r="2.2"/><circle cx="32" cy="51" r="2.2"/><circle cx="16" cy="35" r="2.2"/><circle cx="48" cy="35" r="2.2"/><circle cx="21" cy="24" r="2"/><circle cx="43" cy="24" r="2"/><circle cx="21" cy="46" r="2"/><circle cx="43" cy="46" r="2"/></g></svg><span>Hours</span></h1>
+        <p class="tagline">Do it for 20 hours to master the skill.</p>
+      </div>
 
       <div class="card">
         <label>New project</label>
@@ -121,24 +101,6 @@
           <input id="newproj" placeholder="Project name" />
           <button class="btn" id="addproj">Add</button>
         </div>
-      </div>
-    </div>
-
-    <div class="binge">
-      <div>
-        <div class="bt">Binge-free streak</div>
-        <div class="bd"><span id="bingeDaysText">0</span> days</div>
-      </div>
-      <div class="controls">
-        <input id="bingeDaysNumber" type="number" min="0" max="365" value="0" />
-        <label class="goal">Goal <input id="bingeGoal" type="number" min="1" max="365" value="30" /></label>
-      </div>
-      <div class="bingeActions">
-        <button class="dangerbtn" id="logBinge">Log binge</button>
-      </div>
-      <div class="bingeHistory">
-        <div class="historyHead"><span>History</span><button class="historyClear" id="clearBinges">Clear</button></div>
-        <div class="historyItems" id="bingeHistory"></div>
       </div>
     </div>
 
@@ -165,7 +127,6 @@
   function showSignedOut(){
     session = null;
     projects = []; hours = [];
-    bingeState = { days: 0, goal: 30 }; bingeHistory = [];
     $("authView").style.display = "block";
     $("appView").style.display = "none";
   }
@@ -175,115 +136,7 @@
     $("authView").style.display = "none";
     $("appView").style.display = "block";
     $("userEmail").textContent = session.user.email || "";
-    await loadBingeTracker();
     await load();
-  }
-
-  let bingeState = { days: 0, goal: 30 }, bingeHistory = [];
-  const clampDays = v => Math.max(0, Math.min(365, Number(v)||0));
-  const clampGoal = v => Math.max(1, Math.min(365, Number(v)||30));
-
-  // Writes the streak to the inputs + memory only. Use setBingeValues to also save.
-  function applyBingeValues(days,goal){
-    bingeState = { days: clampDays(days), goal: clampGoal(goal) };
-    $("bingeGoal").value = bingeState.goal;
-    $("bingeDaysNumber").value = bingeState.days;
-    $("bingeDaysText").textContent = bingeState.days;
-  }
-
-  async function setBingeValues(days,goal){
-    if(!session) return;
-    applyBingeValues(days,goal);
-    const { error } = await sb.from("binge_state").upsert({
-      user_id: session.user.id,
-      days: bingeState.days,
-      goal: bingeState.goal,
-      updated_at: new Date().toISOString()
-    });
-    if(error){ status("Couldn't save the streak: "+error.message,"err"); return; }
-    status("");
-  }
-
-  function renderBingeHistory(){
-    const box = $("bingeHistory");
-    if(!bingeHistory.length){
-      box.innerHTML = `<div class="historyEmpty">No binges logged yet.</div>`;
-      return;
-    }
-    box.innerHTML = bingeHistory.map(item=>{
-      const days = Number(item.days)||0;
-      const goal = clampGoal(item.goal || bingeState.goal);
-      const pct = Math.min(100, Math.round(days/goal*100));
-      return `
-      <div class="historyItem">
-        <strong>${days} day${days===1?"":"s"}</strong>
-        <span>${fmtDate(item.created_at)} · ${days}/${goal}</span>
-        <div class="historyBar"><i style="width:${pct}%"></i></div>
-      </div>
-    `}).join("");
-  }
-
-  // One-time carry-over: the streak used to live in this browser's localStorage.
-  // If the account has nothing stored yet, move the old values up and clear them.
-  async function importLegacyBinge(){
-    const key = suffix => `hours:${session.user.id}:${suffix}`;
-    let days = 0, goal = 30, history = [];
-    try{
-      days = clampDays(localStorage.getItem(key("bingeDays")));
-      goal = clampGoal(localStorage.getItem(key("bingeGoal")));
-      history = JSON.parse(localStorage.getItem(key("bingeHistory")) || "[]");
-    }catch(_e){ return false; }
-    if(!Array.isArray(history)) history = [];
-    if(!days && !history.length) return false;
-
-    const rows = history.slice(0,12).map(item=>({
-      days: clampDays(item.days),
-      goal: clampGoal(item.goal),
-      created_at: item.date || new Date().toISOString()
-    }));
-    if(rows.length){
-      const { error } = await sb.from("binge_log").insert(rows);
-      if(error){ status("Couldn't carry over the old history: "+error.message,"err"); return false; }
-    }
-    await setBingeValues(days,goal);
-    try{
-      localStorage.removeItem(key("bingeDays"));
-      localStorage.removeItem(key("bingeGoal"));
-      localStorage.removeItem(key("bingeHistory"));
-    }catch(_e){}
-    return true;
-  }
-
-  async function loadBingeTracker(){
-    if(!session) return;
-    const [{data:st,error:e1},{data:log,error:e2}] = await Promise.all([
-      sb.from("binge_state").select("days,goal").maybeSingle(),
-      sb.from("binge_log").select("*").order("created_at",{ascending:false}).limit(12)
-    ]);
-    if(e1||e2){ status("Couldn't load the binge tracker: "+((e1||e2).message),"err"); return; }
-    if(!st && !(log || []).length && await importLegacyBinge()){ return loadBingeTracker(); }
-    applyBingeValues(st ? st.days : 0, st ? st.goal : 30);
-    bingeHistory = log || [];
-    renderBingeHistory();
-  }
-
-  async function logBinge(){
-    const days = clampDays($("bingeDaysNumber").value);
-    const goal = clampGoal($("bingeGoal").value);
-    if(!confirm(`Log a binge after ${days} day${days===1?"":"s"} and reset the streak?`)) return;
-    status("Saving…");
-    const { error } = await sb.from("binge_log").insert({ days, goal });
-    if(error){ status("Couldn't log the binge: "+error.message,"err"); return; }
-    await setBingeValues(0,goal);
-    await loadBingeTracker();
-  }
-
-  async function clearBinges(){
-    if(!session) return;
-    if(!confirm("Clear binge history?")) return;
-    const { error } = await sb.from("binge_log").delete().eq("user_id", session.user.id);
-    if(error){ status("Couldn't clear history: "+error.message,"err"); return; }
-    await loadBingeTracker();
   }
 
   async function load(){
@@ -408,10 +261,6 @@
   $("newproj").addEventListener("keydown", e=>{ if(e.key==="Enter") addProject(); });
   $("googleSignin").onclick = signInWithGoogle;
   $("signout").onclick = signOut;
-  $("bingeDaysNumber").addEventListener("change", e=>setBingeValues(e.target.value,$("bingeGoal").value));
-  $("bingeGoal").addEventListener("change", e=>setBingeValues($("bingeDaysNumber").value,e.target.value));
-  $("logBinge").onclick = logBinge;
-  $("clearBinges").onclick = clearBinges;
   sb.auth.onAuthStateChange((_event,nextSession)=>{
     if(nextSession){ showSignedIn(nextSession); }
     else{ showSignedOut(); }

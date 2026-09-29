@@ -5,9 +5,8 @@ A single-file web app to create projects and log hours, backed by Supabase.
 - `index.html` — the entire app (open it or host it; the Supabase URL and anon key are inside, which is fine — every table is protected by row-level security).
 - `hours-table.sql` — run in your Supabase project's SQL Editor to create/update the tables and RLS policies.
 
-Everything is stored per account in Supabase — projects, hours, and the binge-free
-streak with its history — so it follows you across browsers and devices. Nothing is
-kept only in the browser. Tables: `projects`, `hours`, `binge_state`, `binge_log`.
+Projects and hours are stored per account in Supabase, so they follow you across
+browsers and devices. Nothing is kept only in the browser. Tables: `projects`, `hours`.
 
 ## Hosting on GitHub Pages
 

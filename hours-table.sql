@@ -62,3 +62,40 @@ create policy "own hours insert" on public.hours for insert with check (
   )
 );
 create policy "own hours delete" on public.hours for delete using (user_id = auth.uid());
+
+-- 4) Binge tracker: current streak (one row per user) + logged binges.
+--    Replaces the old browser-localStorage version, so the streak and history
+--    follow the account across devices and browsers.
+create table if not exists public.binge_state (
+  user_id uuid primary key references auth.users(id) on delete cascade default auth.uid(),
+  days integer not null default 0,
+  goal integer not null default 30,
+  updated_at timestamptz default now()
+);
+
+create table if not exists public.binge_log (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete cascade default auth.uid(),
+  days integer not null,
+  goal integer not null,
+  created_at timestamptz default now()
+);
+
+alter table public.binge_state enable row level security;
+alter table public.binge_log   enable row level security;
+
+drop policy if exists "own binge state read"   on public.binge_state;
+drop policy if exists "own binge state insert" on public.binge_state;
+drop policy if exists "own binge state update" on public.binge_state;
+drop policy if exists "own binge state delete" on public.binge_state;
+create policy "own binge state read"   on public.binge_state for select using (user_id = auth.uid());
+create policy "own binge state insert" on public.binge_state for insert with check (user_id = auth.uid());
+create policy "own binge state update" on public.binge_state for update using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "own binge state delete" on public.binge_state for delete using (user_id = auth.uid());
+
+drop policy if exists "own binge log read"   on public.binge_log;
+drop policy if exists "own binge log insert" on public.binge_log;
+drop policy if exists "own binge log delete" on public.binge_log;
+create policy "own binge log read"   on public.binge_log for select using (user_id = auth.uid());
+create policy "own binge log insert" on public.binge_log for insert with check (user_id = auth.uid());
+create policy "own binge log delete" on public.binge_log for delete using (user_id = auth.uid());
